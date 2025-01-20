@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/DetectPlatforms.dir/get_platforms.cpp.o -o DetectPlatforms  /usr/lib/x86_64-linux-gnu/libOpenCL.so 

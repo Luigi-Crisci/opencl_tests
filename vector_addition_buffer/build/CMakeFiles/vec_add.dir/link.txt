@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/vec_add.dir/vec_add.cpp.o -o vec_add  /usr/lib/x86_64-linux-gnu/libOpenCL.so 
