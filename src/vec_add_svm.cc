@@ -85,9 +85,10 @@ int main() {
         for (size_t i = 0; i < VECTOR_SIZE; i++) {
             a[i] = static_cast<float>(i);
             b[i] = static_cast<float>(i);
+            c[i] = 0.0f;
         }
 
-        // Map SVM buffers
+        // // Map SVM buffers
         queue.enqueueMapSVM(a, CL_TRUE, CL_MAP_WRITE, VECTOR_SIZE * sizeof(float));
         queue.enqueueMapSVM(b, CL_TRUE, CL_MAP_WRITE, VECTOR_SIZE * sizeof(float));
         queue.enqueueMapSVM(c, CL_TRUE, CL_MAP_WRITE, VECTOR_SIZE * sizeof(float));
@@ -102,10 +103,10 @@ int main() {
         queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(VECTOR_SIZE), cl::NullRange);
         queue.finish();
 
-        // Unmap SVM buffers
-        queue.enqueueUnmapSVM(a);
-        queue.enqueueUnmapSVM(b);
-        queue.enqueueUnmapSVM(c);
+        // // Unmap SVM buffers
+        // queue.enqueueUnmapSVM(a);
+        // queue.enqueueUnmapSVM(b);
+        // queue.enqueueUnmapSVM(c);
         queue.finish();
 
         // Verify results

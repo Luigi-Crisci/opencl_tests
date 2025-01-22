@@ -2,27 +2,28 @@
 #include <iostream>
 #include <numeric>
 #include <vector>
+#include <cassert>
 
 constexpr int vector_size = 1024;
 
 const char *kernel_iota = R"(
-__kernel void iota(__global float* a,
-                       const unsigned int n)
+__kernel void iota(__global int* a,
+                       const int n)
 {
     int id = get_global_id(0);
     if (id < n)
-        a[id] = n;
+        a[id] = id;
 }
 )";
 
-bool verify(int *a, int *b, const int size)
+bool verify(int* b, const int size)
 {
     for (int i = 0; i < size; i++)
     {
-        if (a[i] != b[i])
+        if (b[i] != i)
         {
             std::cout << "Verification failed at index " << i << std::endl;
-            std::cout << "Expected: " << a[i] << ", Got: " << b[i] << std::endl;
+            std::cout << "Expected: " << i << ", Got: " << b[i] << std::endl;
             return false;
         }
     }
@@ -33,7 +34,7 @@ void reset(int *a, int *b)
 {
     for (int i = 0; i < vector_size; i++)
     {
-        a[i] = i;
+        a[i] = 0;
         b[i] = 0;
     }
 }
@@ -93,35 +94,41 @@ int main()
 
     reset(a, b);
     // Blocking
-    std::cout << "Blocking" << std::endl;
-    queue.enqueueMemcpySVM(b, a, true, vector_size * sizeof(int));
-    std::cout << "Verification "
-              << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
-    // Non-blocking
-    std::cout << "Non-blocking" << std::endl;
-    reset(a, b);
-    cl::Event event;
-    queue.enqueueMemcpySVM(b, a, false, vector_size * sizeof(int), nullptr,
-                           &event);
-    event.wait();
-    std::cout << "Verification "
-              << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
+    // std::cout << "Blocking" << std::endl;
+    // std::iota(a, a + vector_size, 0);
+    // queue.enqueueMemcpySVM(b, a, true, vector_size * sizeof(int));
+    // std::cout << "Verification "
+    //           << (verify(b, vector_size) ? "PASSED" : "FAILED") << std::endl;
+    // // Non-blocking
+    // std::cout << "Non-blocking" << std::endl;
+    // reset(a, b);
+    // std::iota(a, a + vector_size, 0);
+    // cl::Event event;
+    // queue.enqueueMemcpySVM(b, a, false, vector_size * sizeof(int), nullptr,
+    //                        &event);
+    // event.wait();
+    // std::cout << "Verification "
+    //           << (verify(b, vector_size) ? "PASSED" : "FAILED") << std::endl;
 
     // Non-blocking, init with kernel
     std::cout << "Non-blocking, init with kernel" << std::endl;
     reset(a, b);
+    for(int i = 0; i < vector_size; i++){
+        std::cout << a[i];
+    }
     cl::Program program(context, kernel_iota);
     program.build({ device });
     cl::Kernel kernel(program, "iota");
 
-    queue.enqueueMapSVM(a, CL_TRUE, CL_MAP_WRITE, vector_size * sizeof(int));
+    // queue.enqueueMapSVM(a, CL_TRUE, CL_MAP_WRITE, vector_size * sizeof(int));
     kernel.setArg(0, a);
     kernel.setArg(1, vector_size);
     queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(vector_size),
-                               cl::NullRange, nullptr, &event);
-    event.wait();
-    queue.enqueueUnmapSVM(a);
-    queue.enqueueMemcpySVM(b, a, true, vector_size * sizeof(int));
+                               cl::NullRange);
+    // queue.enqueueUnmapSVM(a);
+    queue.finish();
+
+    // queue.enqueueMemcpySVM(b, a, true, vector_size * sizeof(int));
     std::cout << "Verification "
-              << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
+              << (verify(a, vector_size) ? "PASSED" : "FAILED") << std::endl;
 }
