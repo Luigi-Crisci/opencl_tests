@@ -5,7 +5,7 @@
 
 constexpr int vector_size = 1024;
 
-const char* kernel_iota = R"(
+const char *kernel_iota = R"(
 __kernel void iota(__global float* a,
                        const unsigned int n)
 {
@@ -15,9 +15,12 @@ __kernel void iota(__global float* a,
 }
 )";
 
-bool verify(int* a, int *b, const int size){
-    for (int i = 0; i < size; i++) {
-        if (a[i] != b[i]) {
+bool verify(int *a, int *b, const int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        if (a[i] != b[i])
+        {
             std::cout << "Verification failed at index " << i << std::endl;
             std::cout << "Expected: " << a[i] << ", Got: " << b[i] << std::endl;
             return false;
@@ -26,8 +29,10 @@ bool verify(int* a, int *b, const int size){
     return true;
 }
 
-void reset(int* a, int* b){
-    for (int i = 0; i < vector_size; i++) {
+void reset(int *a, int *b)
+{
+    for (int i = 0; i < vector_size; i++)
+    {
         a[i] = i;
         b[i] = 0;
     }
@@ -43,14 +48,23 @@ int main()
         throw std::runtime_error("No OpenCL platforms found");
     }
 
-    cl::Platform platform = platforms[0];
+    cl::Platform platform;
     std::vector<cl::Device> devices;
-    platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
+    for (auto &p : platforms)
+    {
+        platform = p;
+        p.getDevices(CL_DEVICE_TYPE_GPU, &devices);
+        if (!devices.empty()) break;
+    }
     if (devices.empty())
     {
         throw std::runtime_error("No OpenCL devices found");
     }
+
     cl::Device device = devices[0];
+    std::cout << "Platform: " << platform.getInfo<CL_PLATFORM_NAME>()
+              << std::endl;
+    std::cout << "Device: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
 
     // Check if device supports SVM
     cl_device_svm_capabilities svm_caps =
@@ -68,9 +82,9 @@ int main()
 
     // Allocate two SVM buffers
     int *a = (int *)clSVMAlloc(context(), CL_MEM_READ_WRITE,
-                                   vector_size * sizeof(int), 0);
+                               vector_size * sizeof(int), 0);
     int *b = (int *)clSVMAlloc(context(), CL_MEM_READ_WRITE,
-                                   vector_size * sizeof(int), 0);
+                               vector_size * sizeof(int), 0);
 
     if (!a || !b)
     {
@@ -78,32 +92,36 @@ int main()
     }
 
     reset(a, b);
-    //Blocking 
+    // Blocking
     std::cout << "Blocking" << std::endl;
     queue.enqueueMemcpySVM(b, a, true, vector_size * sizeof(int));
-    std::cout << "Verification " << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
+    std::cout << "Verification "
+              << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
     // Non-blocking
     std::cout << "Non-blocking" << std::endl;
     reset(a, b);
     cl::Event event;
-    queue.enqueueMemcpySVM(b, a, false, vector_size * sizeof(int), nullptr, &event);
+    queue.enqueueMemcpySVM(b, a, false, vector_size * sizeof(int), nullptr,
+                           &event);
     event.wait();
-    std::cout << "Verification " << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
-    
-    //Non-blocking, init with kernel
+    std::cout << "Verification "
+              << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
+
+    // Non-blocking, init with kernel
     std::cout << "Non-blocking, init with kernel" << std::endl;
     reset(a, b);
     cl::Program program(context, kernel_iota);
-    program.build({device});
+    program.build({ device });
     cl::Kernel kernel(program, "iota");
 
     queue.enqueueMapSVM(a, CL_TRUE, CL_MAP_WRITE, vector_size * sizeof(int));
     kernel.setArg(0, a);
     kernel.setArg(1, vector_size);
-    queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(vector_size), cl::NullRange, nullptr, &event);
+    queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(vector_size),
+                               cl::NullRange, nullptr, &event);
     event.wait();
     queue.enqueueUnmapSVM(a);
     queue.enqueueMemcpySVM(b, a, true, vector_size * sizeof(int));
-    std::cout << "Verification " << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
-
+    std::cout << "Verification "
+              << (verify(a, b, vector_size) ? "PASSED" : "FAILED") << std::endl;
 }
