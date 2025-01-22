@@ -1,3 +1,0 @@
-/home/lcrisci/workspace/librert/opencl/opencl_cmake/build/CMakeFiles/DetectPlatforms.dir
-/home/lcrisci/workspace/librert/opencl/opencl_cmake/build/CMakeFiles/edit_cache.dir
-/home/lcrisci/workspace/librert/opencl/opencl_cmake/build/CMakeFiles/rebuild_cache.dir

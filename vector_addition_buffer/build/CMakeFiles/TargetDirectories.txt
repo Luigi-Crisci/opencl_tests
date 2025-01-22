@@ -1,3 +1,0 @@
-/home/lcrisci/workspace/librert/opencl/vector_addition/build/CMakeFiles/vec_add.dir
-/home/lcrisci/workspace/librert/opencl/vector_addition/build/CMakeFiles/edit_cache.dir
-/home/lcrisci/workspace/librert/opencl/vector_addition/build/CMakeFiles/rebuild_cache.dir

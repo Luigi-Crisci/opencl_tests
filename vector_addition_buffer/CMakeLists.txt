@@ -1,5 +1,0 @@
-cmake_minimum_required(VERSION 3.7)
-project(vec_add LANGUAGES CXX)
-find_package(OpenCL REQUIRED)
-add_executable(${PROJECT_NAME} vec_add.cpp)
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenCL::OpenCL)

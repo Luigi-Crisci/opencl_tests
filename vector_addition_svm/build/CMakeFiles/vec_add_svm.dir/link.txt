@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/vec_add_svm.dir/vec_add_svm.cc.o -o vec_add_svm  /usr/lib/x86_64-linux-gnu/libOpenCL.so 

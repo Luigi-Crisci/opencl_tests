@@ -1,0 +1,5 @@
+{
+    "cmake.configureArgs": [
+        "-DCMAKE_PREFIX_PATH=/home/lcrisci/workspace/OpenCL-SDK/install/"
+    ]
+}

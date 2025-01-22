@@ -1,0 +1,1 @@
+/usr/bin/c++ CMakeFiles/get_platforms.dir/get_platforms.cc.o -o get_platforms  -Wl,-rpath,/home/lcrisci/workspace/OpenCL-SDK/install/lib /home/lcrisci/workspace/OpenCL-SDK/install/lib/libOpenCL.so.1.0.0 -ldl 

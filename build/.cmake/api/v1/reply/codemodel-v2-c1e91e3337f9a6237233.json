@@ -1,0 +1,103 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1
+					],
+					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.7"
+					},
+					"projectIndex" : 0,
+					"source" : "."
+				},
+				{
+					"build" : "src",
+					"jsonFile" : "directory-src-Debug-b6cf2213fc5053b67c22.json",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.7"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"name" : "Debug",
+			"projects" : 
+			[
+				{
+					"directoryIndexes" : 
+					[
+						0,
+						1
+					],
+					"name" : "vec_add_svm",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 1,
+					"id" : "get_platforms::@145eef247bfb46b6828c",
+					"jsonFile" : "target-get_platforms-Debug-c6bbd2a5c3b9dfe41725.json",
+					"name" : "get_platforms",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "svm_memops::@145eef247bfb46b6828c",
+					"jsonFile" : "target-svm_memops-Debug-2fd606d8ec49f47d118a.json",
+					"name" : "svm_memops",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "vec_add_buffer::@145eef247bfb46b6828c",
+					"jsonFile" : "target-vec_add_buffer-Debug-e69bc205e65b80d13300.json",
+					"name" : "vec_add_buffer",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "vec_add_svm::@145eef247bfb46b6828c",
+					"jsonFile" : "target-vec_add_svm-Debug-2eec19cff84af8d06bc4.json",
+					"name" : "vec_add_svm",
+					"projectIndex" : 0
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/lcrisci/workspace/librert/opencl_tests/build",
+		"source" : "/home/lcrisci/workspace/librert/opencl_tests"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 3
+	}
+}
