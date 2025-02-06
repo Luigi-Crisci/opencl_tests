@@ -7,51 +7,59 @@
 
 auto init_opencl(){
     // Get platform and device
-        std::vector<cl::Platform> platforms;
-        cl::Platform::get(&platforms);
-        if (platforms.empty()) {
-            throw std::runtime_error("No OpenCL platforms found");
-        }
+    std::vector<cl::Platform> platforms;
+    cl::Platform::get(&platforms);
+    if (platforms.empty())
+    {
+        throw std::runtime_error("No OpenCL platforms found");
+    }
 
-        cl::Platform platform = platforms[0];
-        std::vector<cl::Device> devices;
-        platform.getDevices(CL_DEVICE_TYPE_ALL, &devices);
-        if (devices.empty()) {
-            throw std::runtime_error("No OpenCL devices found");
-        }
-        cl::Device device = devices[0];
+    cl::Platform platform;
+    std::vector<cl::Device> devices;
+    for (auto &p : platforms)
+    {
+        platform = p;
+        p.getDevices(CL_DEVICE_TYPE_CPU, &devices);
+        if (!devices.empty()) break;
+    }
+    if (devices.empty())
+    {
+        throw std::runtime_error("No OpenCL devices found");
+    }
 
-        // Check if device supports SVM
-        cl_device_svm_capabilities svm_caps = 
-            device.getInfo<CL_DEVICE_SVM_CAPABILITIES>();
-        
-        if (!(svm_caps & CL_DEVICE_SVM_COARSE_GRAIN_BUFFER)) {
-            throw std::runtime_error("Device does not support coarse-grained SVM");
-        }
+    cl::Device device = devices[0];
 
-        // Create context and queue
-        cl::Context context(device);
-        cl::CommandQueue queue(context, device);
+    // Create context and queue
+    cl::Context context(device);
+    cl::CommandQueue queue(context, device);
 
-        return queue;
+    std::cout << "Running on device: " << device.getInfo<CL_DEVICE_NAME>() << std::endl;
+
+    return std::tuple{queue, context, device};
 }
+
+
+char* kernel = R"(
+__kernel void iota(__global float* a,
+                       const unsigned int n)
+{
+    int id = get_global_id(0);
+    if (id < n)
+        a[id] = n;
+}
+)";
 
 
 int main(){
 
-    auto queue = init_opencl();
+    auto [queue, context, device] = init_opencl();
 
-    std::ifstream file("/home/orangepi/lcrisci/opencl_tests/src/hello_world.spv", std::ios::in);
+    std::ifstream file("/home/lcrisci/workspace/librert/opencl_tests/src/iota_kernel.spv", std::ios::in);
     std::vector<char> ir(std::istreambuf_iterator<char>(file), {});
     file.close();
 
-    for(auto& c : ir){
-        std::cout << c;
-    }
-
-
     cl_int err;
-    cl::Program program(ir, false, &err);
+    cl::Program program(context, ir, false, &err);
     
     auto handle_opencl_err = [&](cl_int res){
         if (res!= CL_SUCCESS){
@@ -65,8 +73,23 @@ int main(){
     
     handle_opencl_err(err);
 
-    auto res = program.build("-cl-std=CL2.0");
+    auto res = program.build(device,"-cl-std=CL2.0");
     handle_opencl_err(res);
+
+    auto kernel = cl::Kernel(program, "iota", &err);
+    handle_opencl_err(err);
+
+    // launch kernel 
+    cl::Buffer buffer(context, CL_MEM_READ_WRITE, sizeof(float));
+    kernel.setArg(0, buffer);
+    kernel.setArg(1, 42);
+    queue.enqueueNDRangeKernel(kernel, cl::NullRange, cl::NDRange(1), cl::NullRange);
+    queue.finish();
+
+    float result;
+    queue.enqueueReadBuffer(buffer, CL_TRUE, 0, sizeof(float), &result);
+
+    std::cout << "Result: " << result << std::endl;
 
     return 0;
 }
