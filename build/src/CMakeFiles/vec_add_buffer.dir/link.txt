@@ -1,1 +1,0 @@
-/usr/bin/c++ CMakeFiles/vec_add_buffer.dir/vec_add_buffer.cc.o -o vec_add_buffer  -Wl,-rpath,/home/lcrisci/workspace/OpenCL-SDK/install/lib /home/lcrisci/workspace/OpenCL-SDK/install/lib/libOpenCL.so.1.0.0 -ldl 

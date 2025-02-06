@@ -11,6 +11,7 @@ int main()
     cl_uint numPlatforms = 0;
 
     CL_err = clGetPlatformIDs( 0, NULL, &numPlatforms );
+    
 
     if (CL_err == CL_SUCCESS)
         printf("%u platform(s) found\n", numPlatforms);

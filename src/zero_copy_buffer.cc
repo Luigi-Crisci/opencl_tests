@@ -34,8 +34,7 @@ int main() {
 
   cl_int err;
   cl_mem res = clImportMemoryARM(context(),CL_MEM_READ_WRITE, nullptr , (void*) data, 8 * sizeof(int),&err);
-    
   
-
+  
 
 }

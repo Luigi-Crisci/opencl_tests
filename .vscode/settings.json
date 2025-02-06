@@ -1,5 +1,7 @@
 {
+    "clangd.path": "/usr/bin/clangd",
     "cmake.configureArgs": [
-        "-DCMAKE_PREFIX_PATH=/home/lcrisci/workspace/OpenCL-SDK/install/"
-    ]
+        // "-DCMAKE_PREFIX_PATH=/home/orangepi/lcrisci/OpenCL-SDK/install/",
+    ],
+    "cmake.generator": "Ninja"
 }

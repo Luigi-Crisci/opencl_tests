@@ -1,8 +1,0 @@
-/home/lcrisci/workspace/librert/opencl_tests/build/CMakeFiles/edit_cache.dir
-/home/lcrisci/workspace/librert/opencl_tests/build/CMakeFiles/rebuild_cache.dir
-/home/lcrisci/workspace/librert/opencl_tests/build/src/CMakeFiles/vec_add_svm.dir
-/home/lcrisci/workspace/librert/opencl_tests/build/src/CMakeFiles/get_platforms.dir
-/home/lcrisci/workspace/librert/opencl_tests/build/src/CMakeFiles/vec_add_buffer.dir
-/home/lcrisci/workspace/librert/opencl_tests/build/src/CMakeFiles/svm_memops.dir
-/home/lcrisci/workspace/librert/opencl_tests/build/src/CMakeFiles/edit_cache.dir
-/home/lcrisci/workspace/librert/opencl_tests/build/src/CMakeFiles/rebuild_cache.dir

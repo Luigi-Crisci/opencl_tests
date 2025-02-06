@@ -104,9 +104,9 @@ int main() {
         queue.finish();
 
         // // Unmap SVM buffers
-        // queue.enqueueUnmapSVM(a);
-        // queue.enqueueUnmapSVM(b);
-        // queue.enqueueUnmapSVM(c);
+        queue.enqueueUnmapSVM(a);
+        queue.enqueueUnmapSVM(b);
+        queue.enqueueUnmapSVM(c);
         queue.finish();
 
         // Verify results
